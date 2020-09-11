@@ -22,7 +22,10 @@ public class main {
             System.out.println(e.toString());
         }
         return conn;
+
     }
+
+    ReizigerDAOPsql reizigerDAOPsql = new ReizigerDAOPsql(getConn());
 
 
 
@@ -39,25 +42,25 @@ public class main {
 
         // Maak een nieuwe reiziger aan en persisteer deze in de database
         String gbdatum = "1981-03-14";
-        Reiziger sietske = new Reiziger(77, "S", "", "Boers", (gbdatum));
+        Reiziger sietske = new Reiziger();
         System.out.print("[Test] Eerst " + reizigers.size() + " reizigers, na P2.ReizigerDAO.save() ");
         rdao.save(sietske);
         reizigers = rdao.findAll();
         System.out.println(reizigers.size() + " reizigers\n");
 
         // Voeg aanvullende tests van de ontbrekende CRUD-operaties in.
-        
+
 
     }
 
     public main() throws SQLException{
         Reiziger reiziger = null;
-        getConn();
-        testReizigerDAO();
+        testReizigerDAO(reizigerDAOPsql);
     }
 
     public static void main(String[] args) throws SQLException{
         new main();
 
     }
+    //
 }

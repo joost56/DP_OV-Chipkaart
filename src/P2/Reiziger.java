@@ -1,9 +1,9 @@
 package P2;
 
 import P3.Adres;
+import P4.OVChipkaart;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import java.util.List;
 
 public class Reiziger {
     private int reiziger_id;
@@ -12,8 +12,9 @@ public class Reiziger {
     private String achternaam;
     private String geboortedatum;
     private Adres adres;
+    private List<OVChipkaart> ovChipkaarten;
 
-    public Reiziger(int reiziger_id, String voorletters, String tussenvoegsel, String achternaam, String geboortedatum){
+    public Reiziger(){
         this.reiziger_id = reiziger_id;
         this.voorletters = voorletters;
         this.tussenvoegsel = tussenvoegsel;

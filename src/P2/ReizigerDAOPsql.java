@@ -65,10 +65,6 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     public List<Reiziger> findAll() throws SQLException{
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery("SELECT * FROM reiziger");
-        while (rs.next())
-        {
-            reizigers.add(reiziger);
-        }
         rs.close();
         st.close();
         return reizigers;
