@@ -2,7 +2,9 @@ package P2;
 
 import P3.Adres;
 import P4.OVChipkaart;
+import Verbinding.DBVerbinding;
 
+import java.sql.Date;
 import java.util.List;
 
 public class Reiziger {
@@ -10,11 +12,11 @@ public class Reiziger {
     private String voorletters;
     private String tussenvoegsel;
     private String achternaam;
-    private String geboortedatum;
+    private Date geboortedatum;
     private Adres adres;
     private List<OVChipkaart> ovChipkaarten;
 
-    public Reiziger(){
+    public Reiziger(int reiziger_id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum) {
         this.reiziger_id = reiziger_id;
         this.voorletters = voorletters;
         this.tussenvoegsel = tussenvoegsel;
@@ -22,36 +24,61 @@ public class Reiziger {
         this.geboortedatum = geboortedatum;
     }
 
-    public int getId() {
+    public int getReiziger_id() {
         return reiziger_id;
     }
 
-    public void setId(int reiziger_id) {
+    public void setReiziger_id(int reiziger_id) {
         this.reiziger_id = reiziger_id;
-    }
-
-    public String getNaam() {
-        return voorletters + tussenvoegsel + achternaam;
     }
 
     public String getVoorletters() {
         return voorletters;
     }
 
+    public void setVoorletters(String voorletters) {
+        this.voorletters = voorletters;
+    }
+
     public String getTussenvoegsel() {
         return tussenvoegsel;
+    }
+
+    public void setTussenvoegsel(String tussenvoegsel) {
+        this.tussenvoegsel = tussenvoegsel;
     }
 
     public String getAchternaam() {
         return achternaam;
     }
 
-    public String getGeboortedatum() {
+    public void setAchternaam(String achternaam) {
+        this.achternaam = achternaam;
+    }
+
+    public Date getGeboortedatum() {
         return geboortedatum;
+    }
+
+    public void setGeboortedatum(Date geboortedatum) {
+        this.geboortedatum = geboortedatum;
+    }
+
+    public void setAdres(Adres adres) {
+        this.adres = adres;
+    }
+
+    public Adres getAdres() {
+        return adres;
+    }
+
+    public void createAdres(Adres adres) {
+        this.adres = adres;
     }
 
     @Override
     public String toString() {
-        return "#" + reiziger_id + ": " + voorletters + ". " + tussenvoegsel + " " + achternaam + " (" + geboortedatum + ")" + adres;
+        return "{#" + reiziger_id + " " + voorletters + ". " + tussenvoegsel + " " + achternaam + ", geb. " + geboortedatum + ", " + adres + "}";
     }
+
 }

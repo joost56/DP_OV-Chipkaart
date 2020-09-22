@@ -1,6 +1,10 @@
 package P2;
 
+import P3.Adres;
+import P3.AdresDAOPsql;
+
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReizigerDAOPsql implements ReizigerDAO {
@@ -9,65 +13,119 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     private ReizigerDAO reizigerDAO;
     private List<Reiziger> reizigers;
 
-
-    public ReizigerDAOPsql(Connection conn){
+    public ReizigerDAOPsql(Connection conn) {
         this.conn = conn;
     }
+
 
     @Override
     public boolean save(Reiziger reiziger) throws SQLException {
        PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO reiziger values (?,?,?,?,?) ");
-       preparedStatement.setInt(1, reiziger.getId());
+       preparedStatement.setInt(1, reiziger.getReiziger_id());
        preparedStatement.setString(2, reiziger.getVoorletters());
        preparedStatement.setString(3, reiziger.getTussenvoegsel());
        preparedStatement.setString(4, reiziger.getAchternaam());
-       preparedStatement.setDate(5, java.sql.Date.valueOf(reiziger.getGeboortedatum()));
+       preparedStatement.setDate(5, reiziger.getGeboortedatum());
 
-        return preparedStatement.execute();
+       return preparedStatement.execute();
     }
 
     @Override
     public boolean update(Reiziger reiziger) throws SQLException {
-        PreparedStatement preparedStatement = conn.prepareStatement("UPDATE reiziger SET reiziger_id = ?, voorletters = ?, tussenvoegsel = ?, achternaam = ?, geboortedatum = ?) ");
-        preparedStatement.setInt(1, reiziger.getId());
-        preparedStatement.setString(2, reiziger.getVoorletters());
-        preparedStatement.setString(3, reiziger.getTussenvoegsel());
-        preparedStatement.setString(4, reiziger.getAchternaam());
-        preparedStatement.setDate(5, java.sql.Date.valueOf(reiziger.getGeboortedatum()));
+        int id = reiziger.getReiziger_id();
+        String voorletters = reiziger.getVoorletters();
+        String tussenvoegsel = reiziger.getTussenvoegsel();
+        String achternaam = reiziger.getAchternaam();
+        Date geboortedatum = reiziger.getGeboortedatum();
+
+        Statement stmt = conn.createStatement();
+
+        stmt.executeUpdate("UPDATE reiziger SET reiziger_id = " + id + ", voorletters = '" + voorletters + "', tussenvoegsel = '" + tussenvoegsel + "', achternaam = '" + achternaam + "', geboortedatum = '" + geboortedatum + "' WHERE reiziger_id = " + id);
+
+        AdresDAOPsql adao = new AdresDAOPsql(conn);
+        Adres adres = adao.findByReiziger(reiziger);
+        reiziger.setAdres(adres);
+
+        return true;
+    }
+
+    public boolean delete(Reiziger reiziger) throws SQLException {
+        PreparedStatement preparedStatement = conn.prepareStatement("DELETE FROM reiziger WHERE reiziger_id = ?");
+        preparedStatement.setInt(1, reiziger.getReiziger_id());
 
         return preparedStatement.execute();
     }
 
-    @Override
-    public boolean delete(Reiziger reiziger ) throws SQLException {
-        PreparedStatement preparedStatement = conn.prepareStatement("DELETE FROM reiziger WHERE reiziger_id = ?, voorletters = ?, tussenvoegsel = ?, achternaam = ?, geboortedatum = ? ");
-        preparedStatement.setInt(1, reiziger.getId());
-        preparedStatement.setString(2, reiziger.getVoorletters());
-        preparedStatement.setString(3, reiziger.getTussenvoegsel());
-        preparedStatement.setString(4, reiziger.getAchternaam());
-        preparedStatement.setDate(5, java.sql.Date.valueOf(reiziger.getGeboortedatum()));
 
-        return preparedStatement.execute();
-    }
-    public Reiziger findById(int id) {
-        if (id == reiziger.getId()) {
+    public Reiziger findById(int id) throws SQLException {
+        String query = "SELECT * FROM reiziger WHERE reiziger_id = " + id;
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            int r_id = rs.getInt(1);
+            String vl = rs.getString(2);
+            String tv = rs.getString(3);
+            String an = rs.getString(4);
+            Date gd = rs.getDate(5);
+
+            Reiziger reiziger = new Reiziger(r_id, vl, tv, an, gd);
+            AdresDAOPsql adao = new AdresDAOPsql(conn);
+            Adres adres = adao.findByReiziger(reiziger);
+            reiziger.setAdres(adres);
+
             return reiziger;
+        }else {
+            return null;
         }
-        return null;
     }
-    public List<Reiziger> findByGbdatum(String datum){
-        if (datum == reiziger.getGeboortedatum()){
-            reizigers.add(reiziger);
-            return reizigers;
+
+
+
+    public List<Reiziger> findByGbdatum(String datum)throws SQLException{
+        String query = "SELECT * FROM reiziger WHERE geboortedatum = '" + datum + "'";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        List<Reiziger> gblijst = new ArrayList<>();
+
+        while (rs.next()) {
+            int id = rs.getInt(1);
+            String vl = rs.getString(2);
+            String tv = rs.getString(3);
+            String an = rs.getString(4);
+            Date gd = rs.getDate(5);
+            Reiziger reiziger = new Reiziger(id, vl, tv, an, gd);
+            AdresDAOPsql adao = new AdresDAOPsql(conn);
+            Adres adres = adao.findByReiziger(reiziger);
+            reiziger.setAdres(adres);
+
+            gblijst.add(reiziger);
         }
-    return null;
+        return gblijst;
     }
-    public List<Reiziger> findAll() throws SQLException{
-        Statement st = conn.createStatement();
-        ResultSet rs = st.executeQuery("SELECT * FROM reiziger");
-        rs.close();
-        st.close();
-        return reizigers;
+    public List<Reiziger> findAll() throws SQLException {
+        String query = "SELECT * FROM reiziger";
+
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+
+        List<Reiziger> findAllLijst = new ArrayList<>();
+
+        while (rs.next()) {
+            int id = rs.getInt(1);
+            String voorletter = rs.getString(2);
+            String tussenvoegsel = rs.getString(3);
+            String achternaam = rs.getString(4);
+            Date geboortedatum = rs.getDate(5);
+
+            Reiziger reiziger = new Reiziger(id, voorletter, tussenvoegsel, achternaam, geboortedatum);
+            AdresDAOPsql adao = new AdresDAOPsql(conn);
+            Adres adres = adao.findByReiziger(reiziger);
+            reiziger.setAdres(adres);
+
+            findAllLijst.add(reiziger);
+        }
+        return findAllLijst;
     }
 
 }
