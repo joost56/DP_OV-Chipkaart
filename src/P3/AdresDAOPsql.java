@@ -47,10 +47,6 @@ public class AdresDAOPsql implements AdresDAO{
 
     @Override
     public boolean delete (Adres adres) throws SQLException{
-//        PreparedStatement preparedStatement = conn.prepareStatement("DELETE FROM adres VALUES (adres_id = ?)");
-//        preparedStatement.setInt(1, adres.getAdres_id());
-//        preparedStatement.execute();
-//        return true;
         PreparedStatement preparedStatement = conn.prepareStatement("DELETE FROM adres WHERE adres_id = ?");
         preparedStatement.setInt(1, adres.getAdres_id());
 

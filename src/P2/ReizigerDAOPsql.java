@@ -2,6 +2,8 @@ package P2;
 
 import P3.Adres;
 import P3.AdresDAOPsql;
+import P4.OVChipkaart;
+import P4.OVChipkaartDAOsql;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -27,6 +29,16 @@ public class ReizigerDAOPsql implements ReizigerDAO {
        preparedStatement.setString(4, reiziger.getAchternaam());
        preparedStatement.setDate(5, reiziger.getGeboortedatum());
 
+       AdresDAOPsql adresDAOPsql = new AdresDAOPsql(conn);
+       Adres adres = adresDAOPsql.findByReiziger(reiziger);
+       reiziger.setAdres(adres);
+
+        OVChipkaartDAOsql ovChipkaartDAOsql = new OVChipkaartDAOsql(conn);
+        List<OVChipkaart> OVChipkaarten = ovChipkaartDAOsql.findByReiziger(reiziger);
+        for (OVChipkaart ovChipkaart : OVChipkaarten){
+            reiziger.setOvChipkaarten(ovChipkaart);
+        }
+
        return preparedStatement.execute();
     }
 
@@ -45,6 +57,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         AdresDAOPsql adao = new AdresDAOPsql(conn);
         Adres adres = adao.findByReiziger(reiziger);
         reiziger.setAdres(adres);
+
+        OVChipkaartDAOsql ovChipkaartDAOsql = new OVChipkaartDAOsql(conn);
+        List<OVChipkaart> OVChipkaarten = ovChipkaartDAOsql.findByReiziger(reiziger);
+        for (OVChipkaart ovChipkaart : OVChipkaarten){
+            reiziger.setOvChipkaarten(ovChipkaart);
+        }
 
         return true;
     }
@@ -74,6 +92,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             Adres adres = adao.findByReiziger(reiziger);
             reiziger.setAdres(adres);
 
+            OVChipkaartDAOsql ovChipkaartDAOsql = new OVChipkaartDAOsql(conn);
+            List<OVChipkaart> OVChipkaarten = ovChipkaartDAOsql.findByReiziger(reiziger);
+            for (OVChipkaart ovChipkaart : OVChipkaarten){
+                reiziger.setOvChipkaarten(ovChipkaart);
+            }
+
             return reiziger;
         }else {
             return null;
@@ -99,6 +123,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             Adres adres = adao.findByReiziger(reiziger);
             reiziger.setAdres(adres);
 
+            OVChipkaartDAOsql ovChipkaartDAOsql = new OVChipkaartDAOsql(conn);
+            List<OVChipkaart> OVChipkaarten = ovChipkaartDAOsql.findByReiziger(reiziger);
+            for (OVChipkaart ovChipkaart : OVChipkaarten){
+                reiziger.setOvChipkaarten(ovChipkaart);
+            }
+
             gblijst.add(reiziger);
         }
         return gblijst;
@@ -122,6 +152,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             AdresDAOPsql adao = new AdresDAOPsql(conn);
             Adres adres = adao.findByReiziger(reiziger);
             reiziger.setAdres(adres);
+
+            OVChipkaartDAOsql ovChipkaartDAOsql = new OVChipkaartDAOsql(conn);
+            List<OVChipkaart> OVChipkaarten = ovChipkaartDAOsql.findByReiziger(reiziger);
+            for (OVChipkaart ovChipkaart : OVChipkaarten){
+                reiziger.setOvChipkaarten(ovChipkaart);
+            }
 
             findAllLijst.add(reiziger);
         }

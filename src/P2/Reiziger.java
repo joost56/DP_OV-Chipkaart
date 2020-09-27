@@ -5,6 +5,7 @@ import P4.OVChipkaart;
 import Verbinding.DBVerbinding;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Reiziger {
@@ -14,7 +15,7 @@ public class Reiziger {
     private String achternaam;
     private Date geboortedatum;
     private Adres adres;
-    private List<OVChipkaart> ovChipkaarten;
+    List<OVChipkaart> ovChipkaarten = new ArrayList<>();
 
     public Reiziger(int reiziger_id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum) {
         this.reiziger_id = reiziger_id;
@@ -22,6 +23,10 @@ public class Reiziger {
         this.tussenvoegsel = tussenvoegsel;
         this.achternaam = achternaam;
         this.geboortedatum = geboortedatum;
+    }
+
+    public void setOvChipkaarten(OVChipkaart ovChipkaart) {
+        this.ovChipkaarten.add(ovChipkaart);
     }
 
     public int getReiziger_id() {

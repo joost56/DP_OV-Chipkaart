@@ -21,7 +21,7 @@ public class Main {
         System.out.println("\n---------- Test AdresDAO -------------");
 
         String gbdatum = "2002-03-19";
-        Reiziger RandomReiziger = new Reiziger(6, "J", "van", "Buiting", java.sql.Date.valueOf(gbdatum));
+        Reiziger RandomReiziger = new Reiziger(10, "J", "van", "Buiting", java.sql.Date.valueOf(gbdatum));
         rdao.save(RandomReiziger);
 
         //findall
@@ -31,7 +31,7 @@ public class Main {
             System.out.println(a);
         }
 
-        Adres adres = new Adres(6, "3766cl", "9", "van der weydenstraat", "soest", RandomReiziger.getReiziger_id());
+        Adres adres = new Adres(10, "3766cl", "9", "van der weydenstraat", "soest", RandomReiziger.getReiziger_id());
 
         //save
         System.out.println("\n \n[Test]Uitvoer na het gebruik van de methode AdresDAO.save() en Adres.findAll() :\n");
@@ -45,28 +45,30 @@ public class Main {
         adres.setPostcode("1234op");
         System.out.println("\n \n[Test]Voor AdresDAO.update() :  " + adao.findByReiziger(RandomReiziger));
         adao.update(adres);
-        System.out.println("Na AdresDAO.update()   :  " + adao.findByReiziger(RandomReiziger) +"\n");
+        System.out.println("Na AdresDAO.update()   :  " + adao.findByReiziger(RandomReiziger) + "\n");
 
         //findbyreiziger
         Adres adres1 = adao.findByReiziger(RandomReiziger);
         System.out.println("[Test] findByReiziger() geeft het adres:");
-        System.out.println(adres1);
+        System.out.println(adres1 + "\n");
 
         //delete
-        System.out.print("\n[Test] Adressen voor delete: " + adresList.size() + "  , adressen na delete: ");
+        System.out.print("[Test] Adressen voor delete: ");
+        List<Adres> adresList2 = adao.findAll();
+        System.out.println(adresList2.size() + "\n");
         adao.delete(adres);
-        adresList1 = adao.findAll();
-        System.out.println(adresList.size() + "\n");
+        System.out.println("[Test] Adressen na delete: ");
+        List<Adres> adresList3 = adao.findAll();
+        System.out.println(adresList3.size() + "\n");
     }
 
 
-        public Main() throws SQLException{
+    public Main() throws SQLException {
             testAdresDAO(adresDAOPsql, reizigerDAOPsql);
-
         }
 
-        public static void main(String[] args) throws SQLException{
+        public static void main (String[]args) throws SQLException {
             new Main();
-
         }
-}
+    }
+

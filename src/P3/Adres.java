@@ -74,6 +74,6 @@ public class Adres {
 //    }
     @Override
     public String toString() {
-        return "Adres {" + adres_id +", " + postcode + " " + huisnummer +" " + straat +" "+ woonplaats +'}';
+        return "Adres {" + adres_id +", " + postcode + " " + straat +" "+ huisnummer + " " + woonplaats +'}';
     }
 }
