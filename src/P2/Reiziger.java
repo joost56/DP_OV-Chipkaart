@@ -81,6 +81,10 @@ public class Reiziger {
         this.adres = adres;
     }
 
+    public List<OVChipkaart> getOvChipkaarten() {
+        return ovChipkaarten;
+    }
+
     @Override
     public String toString() {
         return "{#" + reiziger_id + " " + voorletters + ". " + tussenvoegsel + " " + achternaam + ", geb. " + geboortedatum + ", " + adres + "}";

@@ -1,5 +1,6 @@
 package P4;
 
+import P2.Reiziger;
 import P5.Product;
 
 import java.sql.Date;
@@ -11,16 +12,16 @@ public class OVChipkaart {
     private Date geldig_tot;
     private int klasse;
     private int saldo;
-    private int reiziger_id;
+    private Reiziger reiziger;
     List<Product> products = new ArrayList<>();
 
 
-    public OVChipkaart(int kaartnummer, Date geldig_tot, int klasse, int saldo, int reiziger_id) {
+    public OVChipkaart(int kaartnummer, Date geldig_tot, int klasse, int saldo, Reiziger reiziger) {
         this.kaartnummer = kaartnummer;
         this.geldig_tot = geldig_tot;
         this.klasse = klasse;
         this.saldo = saldo;
-        this.reiziger_id = reiziger_id;
+        this.reiziger = reiziger;
     }
 
     public int getKaartnummer() {
@@ -55,12 +56,12 @@ public class OVChipkaart {
         this.saldo = saldo;
     }
 
-    public int getReiziger_id() {
-        return reiziger_id;
+    public Reiziger getReiziger() {
+        return reiziger;
     }
 
-    public void setReiziger_id(int reiziger_id) {
-        this.reiziger_id = reiziger_id;
+    public void setReiziger_id(Reiziger reiziger) {
+        this.reiziger = reiziger;
     }
 
     public List<Product> getProducts() {
@@ -69,5 +70,10 @@ public class OVChipkaart {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    @Override
+    public String toString() {
+        return "OVChipkaart{" + kaartnummer + " " + geldig_tot + " " + klasse + " " + saldo + "}";
     }
 }

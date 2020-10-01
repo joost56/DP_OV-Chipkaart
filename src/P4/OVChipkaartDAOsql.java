@@ -17,14 +17,15 @@ public class OVChipkaartDAOsql implements OVChipkaartDAO {
     }
 
     public boolean save(OVChipkaart ovChipkaart) throws SQLException {
-        PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO reiziger values (?,?,?,?,?) ");
-        preparedStatement.setInt(1, ovChipkaart.getKaartnummer());
-        preparedStatement.setDate(2, ovChipkaart.getGeldig_tot());
-        preparedStatement.setInt(3, ovChipkaart.getKlasse());
-        preparedStatement.setInt(4, ovChipkaart.getSaldo());
-        preparedStatement.setInt(5, ovChipkaart.getReiziger_id());
+        int nummer = ovChipkaart.getKaartnummer();
+        Date geldig_tot = ovChipkaart.getGeldig_tot();
+        int klasse = ovChipkaart.getKlasse();
+        int saldo = ovChipkaart.getSaldo();
+        int id = ovChipkaart.getReiziger().getReiziger_id();
 
-        return preparedStatement.execute();
+        Statement statement = conn.createStatement();
+        statement.executeUpdate("INSERT INTO ov_chipkaart (kaart_nummer, geldig_tot, klasse, saldo, reiziger_id) VALUES (" + nummer + ", '" + geldig_tot + "', " + klasse + ", " + saldo + ", " + id + ")");
+        return true;
     }
 
     public boolean update(OVChipkaart ovChipkaart) throws SQLException {
@@ -32,19 +33,21 @@ public class OVChipkaartDAOsql implements OVChipkaartDAO {
         Date geldig_tot = ovChipkaart.getGeldig_tot();
         int klasse = ovChipkaart.getKlasse();
         int saldo = ovChipkaart.getSaldo();
-        int id = ovChipkaart.getReiziger_id();
+        int id = ovChipkaart.getReiziger().getReiziger_id();
 
-        Statement stmt = conn.createStatement();
+        Statement statement = conn.createStatement();
+        statement.executeUpdate("UPDATE ov_chipkaart SET geldig_tot = '" + geldig_tot + "', klasse = '" + klasse + "', saldo = '" + saldo + "', reiziger_id = '" + id + "'where kaart_nummer = " + nummer);
 
-        stmt.executeUpdate("UPDATE ov_chipkaart SET kaart_nummer = " + nummer + ", geldig_tot = '" + geldig_tot + "', klasse = '" + klasse + "', saldo = '" + saldo + "', reiziger_id = '" + id);
         return true;
     }
 
     public boolean delete(OVChipkaart ovChipkaart) throws SQLException {
-        PreparedStatement preparedStatement = conn.prepareStatement("DELETE FROM ov_chipkaart WHERE kaart_nummer = ?");
-        preparedStatement.setInt(1, ovChipkaart.getKaartnummer());
+        int nummer = ovChipkaart.getKaartnummer();
+        Statement statement = conn.createStatement();
 
-        return preparedStatement.execute();
+        statement.executeUpdate("DELETE FROM ov_chipkaart where kaart_nummer = " + nummer);
+
+        return true;
     }
 
     public List<OVChipkaart> findByReiziger(Reiziger reiziger) throws SQLException {
@@ -60,37 +63,36 @@ public class OVChipkaartDAOsql implements OVChipkaartDAO {
             int klasse = rs.getInt(3);
             int saldo = rs.getInt(4);
 
-            OVChipkaart ovChipkaart = new OVChipkaart(kaartnummer, geldig_tot, klasse, saldo, reiziger.getReiziger_id());
+            OVChipkaart ovChipkaart = new OVChipkaart(kaartnummer, geldig_tot, klasse, saldo, reiziger);
             ovChipkaartList.add(ovChipkaart);
 
         }
         return ovChipkaartList;
     }
 
+    @Override
     public List<OVChipkaart> findAll() throws SQLException {
         String query = "SELECT * FROM ov_chipkaart";
-        PreparedStatement preparedStatement = conn.prepareStatement(query);
-        ResultSet resultSet = preparedStatement.executeQuery();
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        List<OVChipkaart> chipList = new ArrayList<>();
 
-        List<OVChipkaart> ovChipkaartList = new ArrayList<>();
-
-        while (resultSet.next()) {
-            int nummer = resultSet.getInt(1);
-            Date geldig_tot = resultSet.getDate(2);
-            int klasse = resultSet.getInt(3);
-            int saldo = resultSet.getInt(4);
-            int reiziger_id = resultSet.getInt(5);
+        while (rs.next()) {
+            int nummer = rs.getInt(1);
+            Date geldig_tot = rs.getDate(2);
+            int klasse = rs.getInt(3);
+            int saldo = rs.getInt(4);
+            int reiziger_id = rs.getInt(5);
 
             ReizigerDAOPsql rdao = new ReizigerDAOPsql(conn);
-            List<Reiziger> lijst = rdao.findAll();
-            for (var r : lijst) {
-                if (r.getReiziger_id() == reiziger_id) {
-                    OVChipkaart ov = new OVChipkaart(nummer, geldig_tot, klasse, saldo, r.getReiziger_id());
-
-                    ovChipkaartList.add(ov);
+            List<Reiziger> findAllList = rdao.findAll();
+            for (var reiziger : findAllList) {
+                if (reiziger.getReiziger_id() == reiziger_id) {
+                    OVChipkaart ov = new OVChipkaart(nummer, geldig_tot, klasse, saldo, reiziger);//maakt een ov aan alleen als de reiziger bestaat
+                    chipList.add(ov);
                 }
             }
 
-        }return ovChipkaartList;
+        }return chipList;
     }
 }
