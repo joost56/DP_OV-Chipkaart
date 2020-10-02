@@ -67,7 +67,6 @@ public class Main {
         ovDAO.delete(randomOV);
         List<OVChipkaart> ovList3 = ovDAO.findAll();
         System.out.println("[Test] Adressen na delete: " + ovList3.size());
-        
     }
     public Main() throws SQLException{
         testOVChipkaartDAO(ovChipkaartDAOsql, reizigerDAOPsql);
